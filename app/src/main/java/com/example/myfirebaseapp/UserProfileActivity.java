@@ -1,18 +1,25 @@
 package com.example.myfirebaseapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 
 public class UserProfileActivity extends AppCompatActivity {
-
+    String message = "Hello, this is your notification in detail!!!";
     private TextView textViewWelcome,textViewFirstName, textViewLastName, textViewEmail, textViewDoB, textViewGender, textViewMobile;
     private ProgressBar progressBar;
     private  String firstname, lastname, dob, gender, mobile,email;
@@ -38,6 +45,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private FirebaseAuth authProfile;
 
     Toolbar toolbar;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -78,11 +86,12 @@ public class UserProfileActivity extends AppCompatActivity {
             return false;
         });
 
+
         textViewWelcome = findViewById(R.id.textview_show_welcome);
         textViewFirstName = findViewById(R.id.textview_show_firstname);
         textViewLastName = findViewById(R.id.textview_show_lastname);
         textViewEmail = findViewById(R.id.textview_show_email);
-        textViewDoB = findViewById(R.id.textview_show_dob);
+        textViewDoB = findViewById(R.id.textview_show_dob); 
         textViewGender = findViewById(R.id.textview_show_gender);
         textViewMobile = findViewById(R.id.textview_show_mobile);
 
@@ -99,6 +108,22 @@ public class UserProfileActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             showUserProfile(firebaseUser);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void sendNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "mynotification")
+                .setSmallIcon(R.drawable.baseline_message_24)
+                .setContentTitle("Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        Intent intent = new Intent(this, notification.class);
+        intent.putExtra("message", message);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        builder.setContentIntent(pendingIntent);
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.notify(1, builder.build());
     }
 
     private void checkIfEmailVerified(FirebaseUser firebaseUser) {
@@ -166,6 +191,7 @@ public class UserProfileActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -173,11 +199,13 @@ public class UserProfileActivity extends AppCompatActivity {
             startActivity(getIntent());
             finish();
             overridePendingTransition(0,0);
-        }/* else if (id == R.id.menu_update_profile) {
-            Intent intent = new Intent( UserProfileActivity.this,UpdateProfileActivity.class);
-            startActivity(intent);
+        } else if (id == R.id.menu_notification) {
+            sendNotification();
+            Toast.makeText(UserProfileActivity.this, "Successfully sent!!! ", Toast.LENGTH_LONG).show();
+            return true;
+        }
 
-        } else if (id == R.id.menu_update_email) {
+        /* else if (id == R.id.menu_update_email) {
             Intent intent = new Intent(UserProfileActivity.this,UpdateEmail.class);
             startActivity(intent);
         } else if (id == R.id.menu_settings) {

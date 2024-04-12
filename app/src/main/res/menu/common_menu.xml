@@ -9,6 +9,13 @@
         app:showAsAction="ifRoom"
         android:id="@+id/menu_refresh"/>
 
+    <item android:title="Refresh"
+        android:icon="@drawable/baseline_circle_notifications_24"
+        android:alphabeticShortcut="r"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom"
+        android:id="@+id/menu_notification"/>
+
     <item android:title="Update Profile"
         android:id="@+id/menu_update_profile"/>
 
