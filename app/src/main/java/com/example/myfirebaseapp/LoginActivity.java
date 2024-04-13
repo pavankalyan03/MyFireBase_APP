@@ -34,15 +34,12 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText EmailLogin,PasswordLogin;
+    private EditText EmailLogin, PasswordLogin;
     private ProgressBar progressBar;
     private FirebaseAuth authProfile;
     private static final String TAG = "LoginActivity";
-
     Toolbar toolbar;
-
     Button login;
-
     Button buttonForgotPassword;
 
 
@@ -58,16 +55,14 @@ public class LoginActivity extends AppCompatActivity {
         EmailLogin = findViewById(R.id.email_login_editview);
         PasswordLogin = findViewById(R.id.password_login_editview);
 
-        buttonForgotPassword =findViewById(R.id.button_forgot_password);
+        buttonForgotPassword = findViewById(R.id.button_forgot_password);
         buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(LoginActivity.this, "You can reset your password now!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class));
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
             }
         });
-
-
 
         progressBar = findViewById(R.id.progressbarLogin);
 
@@ -76,10 +71,10 @@ public class LoginActivity extends AppCompatActivity {
         imageViewShowHidePwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PasswordLogin.getTransformationMethod().equals(HideReturnsTransformationMethod.getInstance())){
+                if (PasswordLogin.getTransformationMethod().equals(HideReturnsTransformationMethod.getInstance())) {
                     PasswordLogin.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     imageViewShowHidePwd.setImageResource(R.drawable.ic_hide_pwd);
-                }else {
+                } else {
                     PasswordLogin.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     imageViewShowHidePwd.setImageResource(R.drawable.ic_show_pwd);
                 }
@@ -95,24 +90,22 @@ public class LoginActivity extends AppCompatActivity {
                 String textEmail = EmailLogin.getText().toString();
                 String textPwd = PasswordLogin.getText().toString();
 
-                if (TextUtils.isEmpty(textEmail)){
+                if (TextUtils.isEmpty(textEmail)) {
                     Toast.makeText(LoginActivity.this, "Please! Enter your Email", Toast.LENGTH_SHORT).show();
                     EmailLogin.setError("Email is Required");
                     EmailLogin.requestFocus();
-                }
-                else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
                     Toast.makeText(LoginActivity.this, "Please! Re-Enter your Email", Toast.LENGTH_SHORT).show();
                     EmailLogin.setError("Valid Email is Required");
                     EmailLogin.requestFocus();
-                }
-                else if (TextUtils.isEmpty(textPwd)){
+                } else if (TextUtils.isEmpty(textPwd)) {
                     Toast.makeText(LoginActivity.this, "Please! Enter your Password", Toast.LENGTH_SHORT).show();
                     EmailLogin.setError("Password is Required");
                     EmailLogin.requestFocus();
-                }
-                else{
+                } else {
                     progressBar.setVisibility(View.VISIBLE);
-                    loginUser(textEmail,textPwd);
+//                    loginUser(textEmail,textPwd);
+                    loginUsersq(textEmail, textPwd);
                 }
             }
         });
@@ -121,15 +114,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email, String pwd) {
-        authProfile.signInWithEmailAndPassword(email,pwd).addOnCompleteListener(LoginActivity.this,new OnCompleteListener<AuthResult>() {
+        authProfile.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
 
                     FirebaseUser firebaseUser = authProfile.getCurrentUser();
 
-                    if (firebaseUser.isEmailVerified()){
-                        Intent intent = new Intent(LoginActivity.this,UserProfileActivity.class);
+                    if (firebaseUser.isEmailVerified()) {
+                        Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                         //start user profile activity
@@ -137,23 +130,22 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                         Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
 
-                    }else{
+                    } else {
                         firebaseUser.sendEmailVerification();
                         authProfile.signOut();
                         showAlertDialog();
                     }
-                }
-                else{
-                    try{
+                } else {
+                    try {
                         throw task.getException();
-                    }catch (FirebaseAuthInvalidUserException e){
+                    } catch (FirebaseAuthInvalidUserException e) {
                         EmailLogin.setError("User does not Exists! or no longer valid! Please! Register again.");
                         EmailLogin.requestFocus();
-                    }catch (FirebaseAuthInvalidCredentialsException e){
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
                         EmailLogin.setError("Invalid Credentials! Kindly, check and Re-Enter the Credentials.");
                         EmailLogin.requestFocus();
-                    }catch (Exception e){
-                        Log.e(TAG,e.getMessage());
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
                         Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -165,7 +157,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void loginUsersq(String email, String pwd) {
+
+        DBhandler dbh = new DBhandler(LoginActivity.this);
+
+        if (dbh.verifyUSER(email, pwd)) {
+            Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+            Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void showAlertDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setTitle("Email is not verified");
         builder.setMessage("Please! Verify your Email now. You cannot Login without Email verification");
@@ -173,10 +179,12 @@ public class LoginActivity extends AppCompatActivity {
         builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_APP_EMAIL);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+
             }
         });
 
@@ -188,17 +196,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (authProfile.getCurrentUser()!=null){
+        if (authProfile.getCurrentUser() != null) {
             Toast.makeText(LoginActivity.this, "Already Logged In!", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(LoginActivity.this,UserProfileActivity.class);
+            Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             //start user profile activity
             startActivity(intent);
             finish();
-        }
-        else{
+        } else {
             Toast.makeText(LoginActivity.this, "You can Login now.", Toast.LENGTH_SHORT).show();
         }
     }
