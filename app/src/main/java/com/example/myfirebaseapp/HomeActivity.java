@@ -27,7 +27,7 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_home);
 
-        authProfile = FirebaseAuth.getInstance();
+//        authProfile = FirebaseAuth.getInstance();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.bottom_home) {
@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
 //                return true;
 //            }
             else if (item.getItemId() == R.id.bottom_logout) {
-                authProfile.signOut();
+//                authProfile.signOut();
                 Toast.makeText(HomeActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(HomeActivity.this, MainActivity.class);
 

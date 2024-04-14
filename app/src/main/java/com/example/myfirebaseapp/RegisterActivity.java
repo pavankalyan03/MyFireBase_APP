@@ -256,10 +256,12 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUsersq(String textFirstName, String textLastName,String textEmail, String textDOB, String textGender, String textMobile, String textPwd) {
         DBhandler dbhandler = new DBhandler(RegisterActivity.this);
         dbhandler.addNewUSER(textFirstName,textLastName,textEmail,textDOB,textGender,textMobile,textPwd);
-        Toast.makeText(RegisterActivity.this, "User Registered Successfully. Please Verify your E-mail", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
+        Toast.makeText(RegisterActivity.this, "User Registered Successfully.", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+
+        progressBar.setVisibility(View.GONE);
     }
 }

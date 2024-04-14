@@ -40,7 +40,8 @@ public class UserProfileActivity extends AppCompatActivity {
     String message = "Hello, this is your notification in detail!!!";
     private TextView textViewWelcome,textViewFirstName, textViewLastName, textViewEmail, textViewDoB, textViewGender, textViewMobile;
     private ProgressBar progressBar;
-    private  String firstname, lastname, dob, gender, mobile,email;
+    private  String firstname, lastname, dob, gender, mobile;
+    private static String email;
     private ImageView imageView;
     private FirebaseAuth authProfile;
 
@@ -75,7 +76,7 @@ public class UserProfileActivity extends AppCompatActivity {
 //                return true;
 //            }
             else if (item.getItemId() == R.id.bottom_logout) {
-                authProfile.signOut();
+//                authProfile.signOut();
                 Toast.makeText(UserProfileActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(UserProfileActivity.this, MainActivity.class);
 
@@ -97,17 +98,31 @@ public class UserProfileActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressbarShow);
 
-        authProfile = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = authProfile.getCurrentUser();
 
-        if (firebaseUser == null){
-            Toast.makeText(UserProfileActivity.this, "Something went wrong! User details not available at this moment", Toast.LENGTH_LONG).show();
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("fromloginactivity")){
+            email = intent.getStringExtra("Email");
+            showUserProfilesq(email);
         }
-        else{
-            checkIfEmailVerified(firebaseUser);
-            progressBar.setVisibility(View.VISIBLE);
-            showUserProfile(firebaseUser);
+        else {
+            showUserProfilesq(email);
         }
+
+
+
+
+//        authProfile = FirebaseAuth.getInstance();
+//        FirebaseUser firebaseUser = authProfile.getCurrentUser();
+//
+//        if (firebaseUser == null){
+//            Toast.makeText(UserProfileActivity.this, "Something went wrong! User details not available at this moment", Toast.LENGTH_LONG).show();
+//        }
+//        else{
+//            checkIfEmailVerified(firebaseUser);
+//            progressBar.setVisibility(View.VISIBLE);
+//            showUserProfile(firebaseUser);
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -149,6 +164,26 @@ public class UserProfileActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showUserProfilesq(String userEmail) {
+
+        DBhandler dbHandler = new DBhandler(this);
+        ReadWriteUserDetails user = dbHandler.getUserDetailsByEmail(userEmail);
+
+        if (user != null) {
+            textViewWelcome.setText("Welcome," + user.firstname + "!");
+            textViewFirstName.setText(user.firstname);
+            textViewLastName.setText(user.lastname);
+            textViewEmail.setText(userEmail);
+            textViewDoB.setText(user.dob);
+            textViewGender.setText(user.gender);
+            textViewMobile.setText(user.mobile);
+        }
+        progressBar.setVisibility(View.GONE);
+
+
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {
@@ -219,7 +254,7 @@ public class UserProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(UserProfileActivity.this,DeleteProfileActivity.class);
 
         } */else if (id == R.id.menu_logout) {
-            authProfile.signOut();
+//            authProfile.signOut();
             Toast.makeText(UserProfileActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(UserProfileActivity.this, MainActivity.class);
 

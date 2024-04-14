@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        authProfile = FirebaseAuth.getInstance();
+//        authProfile = FirebaseAuth.getInstance();
 
         login = findViewById(R.id.button_login1);
         login.setOnClickListener(new View.OnClickListener() {
@@ -113,49 +113,49 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void loginUser(String email, String pwd) {
-        authProfile.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-
-                    FirebaseUser firebaseUser = authProfile.getCurrentUser();
-
-                    if (firebaseUser.isEmailVerified()) {
-                        Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                        //start user profile activity
-                        startActivity(intent);
-                        finish();
-                        Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        firebaseUser.sendEmailVerification();
-                        authProfile.signOut();
-                        showAlertDialog();
-                    }
-                } else {
-                    try {
-                        throw task.getException();
-                    } catch (FirebaseAuthInvalidUserException e) {
-                        EmailLogin.setError("User does not Exists! or no longer valid! Please! Register again.");
-                        EmailLogin.requestFocus();
-                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                        EmailLogin.setError("Invalid Credentials! Kindly, check and Re-Enter the Credentials.");
-                        EmailLogin.requestFocus();
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
-                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    Toast.makeText(LoginActivity.this, "Oops! Something went Wrong.", Toast.LENGTH_SHORT).show();
-                }
-                progressBar.setVisibility(View.GONE);
-
-            }
-        });
-    }
+//    private void loginUser(String email, String pwd) {
+//        authProfile.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if (task.isSuccessful()) {
+//
+//                    FirebaseUser firebaseUser = authProfile.getCurrentUser();
+//
+//                    if (firebaseUser.isEmailVerified()) {
+//                        Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                        //start user profile activity
+//                        startActivity(intent);
+//                        finish();
+//                        Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
+//
+//                    } else {
+//                        firebaseUser.sendEmailVerification();
+//                        authProfile.signOut();
+//                        showAlertDialog();
+//                    }
+//                } else {
+//                    try {
+//                        throw task.getException();
+//                    } catch (FirebaseAuthInvalidUserException e) {
+//                        EmailLogin.setError("User does not Exists! or no longer valid! Please! Register again.");
+//                        EmailLogin.requestFocus();
+//                    } catch (FirebaseAuthInvalidCredentialsException e) {
+//                        EmailLogin.setError("Invalid Credentials! Kindly, check and Re-Enter the Credentials.");
+//                        EmailLogin.requestFocus();
+//                    } catch (Exception e) {
+//                        Log.e(TAG, e.getMessage());
+//                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    Toast.makeText(LoginActivity.this, "Oops! Something went Wrong.", Toast.LENGTH_SHORT).show();
+//                }
+//                progressBar.setVisibility(View.GONE);
+//
+//            }
+//        });
+//    }
 
     public void loginUsersq(String email, String pwd) {
 
@@ -164,49 +164,56 @@ public class LoginActivity extends AppCompatActivity {
         if (dbh.verifyUSER(email, pwd)) {
             Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("Email", email);
+            intent.putExtra("fromloginactivity", "true");
             startActivity(intent);
             finish();
             Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    private void showAlertDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-        builder.setTitle("Email is not verified");
-        builder.setMessage("Please! Verify your Email now. You cannot Login without Email verification");
-
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (authProfile.getCurrentUser() != null) {
-            Toast.makeText(LoginActivity.this, "Already Logged In!", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            //start user profile activity
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(LoginActivity.this, "You can Login now.", Toast.LENGTH_SHORT).show();
+        else{
+            Toast.makeText(LoginActivity.this, "Invalid Credentials! Kindly, check and Re-Enter the Credentials.", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
         }
     }
+
+//    private void showAlertDialog() {
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+//        builder.setTitle("Email is not verified");
+//        builder.setMessage("Please! Verify your Email now. You cannot Login without Email verification");
+//
+//        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                Intent intent = new Intent(Intent.ACTION_MAIN);
+//                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+//
+//            }
+//        });
+//
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
+//
+//    }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (authProfile.getCurrentUser() != null) {
+//            Toast.makeText(LoginActivity.this, "Already Logged In!", Toast.LENGTH_SHORT).show();
+//
+//            Intent intent = new Intent(LoginActivity.this, UserProfileActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//            //start user profile activity
+//            startActivity(intent);
+//            finish();
+//        } else {
+//            Toast.makeText(LoginActivity.this, "You can Login now.", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

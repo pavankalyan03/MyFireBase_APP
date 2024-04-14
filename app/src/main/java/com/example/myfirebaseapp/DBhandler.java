@@ -1,5 +1,6 @@
 package com.example.myfirebaseapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -73,6 +74,27 @@ public class DBhandler extends SQLiteOpenHelper {
             return false;
         }
     }
+
+    public ReadWriteUserDetails getUserDetailsByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ReadWriteUserDetails user = null;
+        String[] columns = {ID_COL, FIRSTNAME, LASTNAME, EMAIL, DOB, GENDER, MOBILE};
+        String selection = EMAIL + "=?";
+        String[] selectionArgs = {email};
+        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") String firstName = cursor.getString(cursor.getColumnIndex(FIRSTNAME));
+            @SuppressLint("Range") String lastName = cursor.getString(cursor.getColumnIndex(LASTNAME));
+            @SuppressLint("Range") String dob = cursor.getString(cursor.getColumnIndex(DOB));
+            @SuppressLint("Range") String gender = cursor.getString(cursor.getColumnIndex(GENDER));
+            @SuppressLint("Range") String mobile = cursor.getString(cursor.getColumnIndex(MOBILE));
+            user = new ReadWriteUserDetails(firstName, lastName, dob, gender, mobile);
+            cursor.close();
+        }
+        db.close();
+        return user;
+    }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
