@@ -94,17 +94,20 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Please! Enter your Email", Toast.LENGTH_SHORT).show();
                     EmailLogin.setError("Email is Required");
                     EmailLogin.requestFocus();
+                } else if (textEmail.equals("admin") && textPwd.equals("admin")) {
+                    Intent intent = new Intent(LoginActivity.this, Admin_Activity.class);
+                    startActivity(intent);
+                    Toast.makeText(LoginActivity.this, "You are Logged as admin", Toast.LENGTH_SHORT).show();
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
                     Toast.makeText(LoginActivity.this, "Please! Re-Enter your Email", Toast.LENGTH_SHORT).show();
                     EmailLogin.setError("Valid Email is Required");
                     EmailLogin.requestFocus();
                 } else if (TextUtils.isEmpty(textPwd)) {
                     Toast.makeText(LoginActivity.this, "Please! Enter your Password", Toast.LENGTH_SHORT).show();
-                    EmailLogin.setError("Password is Required");
-                    EmailLogin.requestFocus();
+                    PasswordLogin.setError("Password is Required");
+                    PasswordLogin.requestFocus();
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
-//                    loginUser(textEmail,textPwd);
                     loginUsersq(textEmail, textPwd);
                 }
             }
@@ -169,9 +172,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             Toast.makeText(LoginActivity.this, "You are Logged In now!", Toast.LENGTH_SHORT).show();
-        }
-
-        else{
+        } else {
             Toast.makeText(LoginActivity.this, "Invalid Credentials! Kindly, check and Re-Enter the Credentials.", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }

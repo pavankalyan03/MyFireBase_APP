@@ -64,10 +64,29 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     editTextPwdResetEmail.requestFocus();
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
-                    resetPassword(email);
+//                    resetPassword(email);
+                    resetPasswordsq(email);
+
                 }
             }
         });
+
+    }
+
+    private void resetPasswordsq(String email){
+        DBhandler db = new DBhandler(this);
+        if (db.verifyUSER(email)){
+            db.resetPassword(email);
+            Toast.makeText(this, "Your Password has been set to 123456789, You can login Now <3", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(ForgotPasswordActivity.this,LoginActivity.class));
+            finish();
+        }
+        else{
+            Toast.makeText(ForgotPasswordActivity.this, "Email Not Found", Toast.LENGTH_LONG).show();
+            editTextPwdResetEmail.setError("First Go Register");
+            editTextPwdResetEmail.requestFocus();
+            progressBar.setVisibility(View.GONE);
+        }
 
     }
 

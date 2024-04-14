@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DBhandler extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "SQLiteDB_mad";
@@ -74,6 +77,22 @@ public class DBhandler extends SQLiteOpenHelper {
             return false;
         }
     }
+    public boolean verifyUSER(String email) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE "
+                + EMAIL + " = '" + email + "'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
+
 
     public ReadWriteUserDetails getUserDetailsByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -95,6 +114,38 @@ public class DBhandler extends SQLiteOpenHelper {
         return user;
     }
 
+
+    public List<String> getAllEmails() {
+        List<String> emailList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {EMAIL};
+        Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String email = cursor.getString(cursor.getColumnIndex(EMAIL));
+                emailList.add(email);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return emailList;
+    }
+
+    public void deleteUser(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, EMAIL + " = ?", new String[]{email});
+        db.close();
+    }
+
+    public void resetPassword(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PASSWORD, "123456789");
+
+        db.update(TABLE_NAME, values, EMAIL + " = ?", new String[]{email});
+        db.close();
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
