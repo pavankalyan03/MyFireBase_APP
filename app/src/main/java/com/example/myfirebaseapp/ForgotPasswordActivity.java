@@ -64,8 +64,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     editTextPwdResetEmail.requestFocus();
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
-//                    resetPassword(email);
-                    resetPasswordsq(email);
+                    resetPassword(email);
+//                    resetPasswordsq(email);
 
                 }
             }

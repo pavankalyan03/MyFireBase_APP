@@ -1,15 +1,6 @@
 package com.example.myfirebaseapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-
 import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -19,22 +10,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.Objects;
+import com.google.firebase.database.*;
 
 public class UserProfileActivity extends AppCompatActivity {
     String message = "Hello, this is your notification in detail!!!";
@@ -100,29 +89,27 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-        Intent intent = getIntent();
-        if (intent.hasExtra("fromloginactivity")){
-            email = intent.getStringExtra("Email");
-            showUserProfilesq(email);
-        }
-        else {
-            showUserProfilesq(email);
-        }
-
-
-
-
-//        authProfile = FirebaseAuth.getInstance();
-//        FirebaseUser firebaseUser = authProfile.getCurrentUser();
-//
-//        if (firebaseUser == null){
-//            Toast.makeText(UserProfileActivity.this, "Something went wrong! User details not available at this moment", Toast.LENGTH_LONG).show();
+//        Intent intent = getIntent();
+//        if (intent.hasExtra("fromloginactivity")){
+//            email = intent.getStringExtra("Email");
+//            showUserProfilesq(email);
 //        }
-//        else{
-//            checkIfEmailVerified(firebaseUser);
-//            progressBar.setVisibility(View.VISIBLE);
-//            showUserProfile(firebaseUser);
+//        else {
+//            showUserProfilesq(email);
 //        }
+
+
+        authProfile = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
+        if (firebaseUser == null){
+            Toast.makeText(UserProfileActivity.this, "Something went wrong! User details not available at this moment", Toast.LENGTH_LONG).show();
+        }
+        else{
+            checkIfEmailVerified(firebaseUser);
+            progressBar.setVisibility(View.VISIBLE);
+            showUserProfile(firebaseUser);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

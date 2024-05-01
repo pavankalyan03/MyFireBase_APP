@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "215673736884",
+    "firebase_url": "https://instagram-dube-default-rtdb.firebaseio.com",
+    "project_id": "instagram-dube",
+    "storage_bucket": "instagram-dube.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215673736884:android:732a5c13212bab722451e1",
+        "android_client_info": {
+          "package_name": "com.example.myfirebaseapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC46zIrz38Rr8JElTPDP4NNk5C8Wqf2DtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
