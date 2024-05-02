@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/homeLayout"
+    android:orientation="vertical"
+    android:transitionName="etTransition"
+    android:layout_height="match_parent"
+    tools:context=".PostActivity">
+
+    <LinearLayout
+        android:id="@+id/firstHolder"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="50dp"
+
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/face"
+            android:layout_height="50dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:lines="7"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/etPost"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:hint="What's interesting about your photo?"
+            android:layout_gravity="start"
+            android:gravity="start"
+            android:background="@null"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/sendProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@+id/postImage"
+        android:indeterminate="true"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_below="@id/firstHolder"
+        android:id="@+id/postImage"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
+
+
+
+</RelativeLayout>
