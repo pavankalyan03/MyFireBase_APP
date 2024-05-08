@@ -58,6 +58,25 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"/>
 
+    <Button
+            android:text="Attach"
+            android:id="@+id/atbutton"
+            android:layout_below="@id/postImage"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    <Button
+            android:text="Post"
+            android:layout_below="@id/postImage"
+            android:layout_toEndOf="@id/atbutton"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pobutton"/>
 
 
 </RelativeLayout>

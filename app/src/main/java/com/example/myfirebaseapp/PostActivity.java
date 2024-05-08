@@ -1,32 +1,24 @@
 package com.example.myfirebaseapp;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
+import android.widget.*;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -57,6 +49,8 @@ public class PostActivity extends AppCompatActivity {
     private String userId,download_url;
     Toolbar toolbar;
 
+    Button atch,pst;
+
 
     private final ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::handleImageResult);
 
@@ -65,10 +59,10 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-//        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         toolbar = findViewById(R.id.myToolBar);
         setSupportActionBar(toolbar);
@@ -77,10 +71,33 @@ public class PostActivity extends AppCompatActivity {
         etPost = findViewById(R.id.etPost);
         pb = findViewById(R.id.sendProgress);
         homeLayout = findViewById(R.id.homeLayout);
+        atch = findViewById(R.id.atbutton);
+        pst = findViewById(R.id.pobutton);
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
         mPhotosDatabase = FirebaseDatabase.getInstance().getReference().child("PhotoHub/Blog");
         mPhotosStrorage = FirebaseStorage.getInstance().getReference().child("PhotoHub/BlogImages");
+
+
+        atch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                getContent.launch("image/*");
+            }
+        });
+
+        pst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                post = etPost.getText().toString();
+                if (!TextUtils.isEmpty(post) && imageUri != null) {
+                    pb.setVisibility(View.VISIBLE);
+                    uploadImage(imageUri);
+                }
+            }
+        });
     }
 
 
@@ -122,16 +139,17 @@ public class PostActivity extends AppCompatActivity {
                             download_url = uri.toString();
                             // Continue with the upload process
                         }
-                    });                    String datem = getDateTime();
+                    });
+                    String datem = getDateTime();
                     DatabaseReference newDatabase = mPhotosDatabase.child(myKey);
 
                     newDatabase.child("postid").setValue(myKey);
                     newDatabase.child("postedby").setValue(userId);
                     newDatabase.child("postedon").setValue(datem);
                     newDatabase.child("postdetails").setValue(post);
-                    newDatabase.child("postlikes");
-                    newDatabase.child("postviews");
-                    newDatabase.child("postcomments");
+                    newDatabase.child("postlikes").setValue(0);
+                    newDatabase.child("postviews").setValue(0);
+                    newDatabase.child("postcomments").setValue(0);
 
                     newDatabase.child("postimage").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
